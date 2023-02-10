@@ -14,6 +14,8 @@ const OrderState = Object.freeze({
     NAME: Symbol("name"),
     VEG: Symbol("veg"),
     NONVEG: Symbol("nonveg"),
+    SIDE: Symbol("side"),
+    DIPPING:Symbol("dipping"),
     OPTION: Symbol("option"),
     VEGSIZE: Symbol("Vegsize"),
     NONSIZE: Symbol("Nonveg size"),
@@ -27,7 +29,8 @@ module.exports = class TacoOrder extends Order{
         this.stateCur = OrderState.WELCOMING;
         this.sName="";
         this.sSize = "";
-        this.sToppings = "";
+        this.sSide="";
+        this.sDipping = "";
         this.sDrinks = "";
         this.sOption="";
         this.sItem1 = "veg-taco";
@@ -80,7 +83,7 @@ module.exports = class TacoOrder extends Order{
 
                 //case for veg taco size
                 case OrderState.VEGSIZE:
-                this.stateCur = OrderState.TOPPINGS
+                this.stateCur = OrderState.SIDE
                 this.sSize = sInput;
                 if(this.sSize =="s" || this.sSize== "S"){
                     this.price= this.price + 5;
@@ -97,12 +100,16 @@ module.exports = class TacoOrder extends Order{
                     aReturn.push("INVALID INPUT!! PRESS 'S' or 'M' or 'L'");
                     break;
                     }
-                aReturn.push("Would like any extra toppings or dressings? (like garlic sauce,mayo or anything else) ");
+                aReturn.push("What side item would you like to have? ");
+                aReturn.push("Fries=$5,Poutine=$7,Onion rings=$9 ");
+                aReturn.push("Press F for fries, P for Poutine, O for onion rings");
+                aReturn.push("Press 'No' if you do not want to add any side item ");
+
                 break;
 
                 //case for non veg taco size
                 case OrderState.NONSIZE:
-                    this.stateCur = OrderState.TOPPINGS
+                    this.stateCur = OrderState.SIDE
                     this.sSize = sInput;
                     if(this.sSize =="s" || this.sSize== "S"){
                         this.price= this.price + 6;
@@ -119,13 +126,65 @@ module.exports = class TacoOrder extends Order{
                         aReturn.push("INVALID INPUT!! PRESS 'S' or 'M' or 'L'");
                         break;
                          }
-                    aReturn.push(" Would like any extra toppings or dressings? (like garlic sauce, mayo or anything else)  ");
+                         aReturn.push("What side item would you like to have? ");
+                         aReturn.push("Fries=$5,Poutine=$7,Onion rings=$9 ");
+                         aReturn.push("Press F for fries, P for Poutine, O for onion rings");
+                         aReturn.push("Press 'No' if you do not want to add any side item ");
                     break;
 
+                 
+                    //Side case   
+                case OrderState.SIDE:
+                    this.stateCur= OrderState.DIPPING
+                    this.sSide=sInput;
+                    if(this.sSide =="f" || this.sSide== "F"){
+                        this.price= this.price + 5;
+                    }
+                    else if(this.sSide =="p" || this.sSide== "P"){
+                        this.price= this.price + 7;
+                    }
+                    else if(this.sSide =="o" || this.sSide == "O"){
+                        this.price= this.price + 9;
+                    }
+                    else if(this.sSide =="no" || this.sSide == "NO" || this.sSide == "No" || this.sSide == "nO" ){
+                        this.price= this.price + 0;
+                    }
+                    else{
+                        this.stateCur=OrderState.SIDE;
+                        this.sSize=sInput;
+                        aReturn.push("INVALID INPUT!! PRESS 'F' or 'P' or 'O' or 'NO'  ");
+                        break;
+                         }
+                    aReturn.push("Add any dipping for $1 ");
+                    aReturn.push(" Dippings availaible - Mayo, Ranch, Chipotle ");
+                    aReturn.push(" Press 'M' for mayo, 'R' for ranch, 'C' for chipotle ");
+                    aReturn.push("Press 'No' if you do not want any dipping ");
+
+                   break;
+
+
                     //toppings case
-                 case OrderState.TOPPINGS:
+                 case OrderState.DIPPING:
                 this.stateCur = OrderState.DRINKS
-                this.sToppings = sInput;
+                this.sDipping = sInput;
+                if(this.sDipping =="m" || this.sDipping== "M"){
+                    this.price= this.price + 1;
+                }
+                else if(this.sDipping =="r" || this.sDipping== "R"){
+                    this.price= this.price + 1;
+                }
+                else if(this.sDipping =="c" || this.sDipping == "C"){
+                    this.price= this.price + 1;
+                }
+                else if(this.sDipping =="no" || this.sDipping == "NO" || this.sDipping == "No" || this.sDipping == "nO" ){
+                    this.price= this.price + 0;
+                }
+                else{
+                    this.stateCur=OrderState.DIPPING;
+                    this.sDipping=sInput;
+                    aReturn.push("INVALID INPUT!! PRESS 'M' or 'R' or 'C' or 'NO'  ");
+                    break;
+                     }     
                 aReturn.push("Grab any drink for 5$");
                 aReturn.push("Would you like drinks with that?");
                 aReturn.push("If no then type 'No' otherwise name of the drink ");
@@ -153,13 +212,18 @@ module.exports = class TacoOrder extends Order{
                 else{
                     this.sSize="large";
                 }
+
                 aReturn.push(`of ${this.sSize} ${this.sItem} with toppings ${this.sToppings} `);
+
+
                 if(this.sDrinks == "no" || this.sDrinks=="NO" || this.sDrinks=="No" || this.sDrinks=="nO"){
                     aReturn.push("(no drinks selected)");
                 }
                 else{
                     aReturn.push ( ` and with drink -${this.sDrinks}`);
                 }
+
+
                 aReturn.push(`Total amount is $ ${this.price}`);
                 let d = new Date(); 
                 d.setMinutes(d.getMinutes() + 20);
