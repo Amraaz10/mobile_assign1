@@ -163,6 +163,7 @@ module.exports = class TacoOrder extends Order{
                    break;
 
 
+
                     //toppings case
                  case OrderState.DIPPING:
                 this.stateCur = OrderState.DRINKS
@@ -212,10 +213,55 @@ module.exports = class TacoOrder extends Order{
                 else{
                     this.sSize="large";
                 }
+                aReturn.push(`of ${this.sSize} ${this.sItem} `);
 
-                aReturn.push(`of ${this.sSize} ${this.sItem} with toppings ${this.sToppings} `);
 
 
+                //dippings output print 
+                if(this.sDipping=='c' || this.sDipping=='C'){
+                    this.sDipping="chipotle";
+                    aReturn.push(`with dipping- ${this.sDipping} `);
+                    }
+                    else if(this.sDipping=='r' || this.sDipping=='R')
+                    {
+                    this.sDipping="ranch";
+                      aReturn.push(`with dipping- ${this.sDipping} `);
+                    }
+                    else if(this.sDipping=='m' || this.sDipping=='M')
+                    {
+                    this.sDipping="mayo" ;
+                    aReturn.push(`with dipping- ${this.sDipping} `);
+                    }
+                    else{
+                        this.sDipping="(no dipping selected) ";
+                        aReturn.push(` ${this.sDipping} `);
+                        }
+
+                
+                
+                //side item output print
+                if(this.sSide=='f' || this.sSide=='f'){
+                this.sSide="fries";
+                aReturn.push(`with side item - ${this.sSide} `);
+                }
+                else if(this.sSide=='p' || this.sSide=='P')
+                {
+                this.sSide="poutine";
+                  aReturn.push(`with side item - ${this.sSide} `);
+                }
+                else if(this.sSide=='o' || this.sSide=='0')
+                {
+                this.sSide="onion rings" ;
+                aReturn.push(`with side item - ${this.sSide} `);
+                }
+
+                else{
+                    this.sSide="no side item selected ";
+                    aReturn.push(`- ${this.sSide} `);
+                    }
+
+
+                // drink item output print
                 if(this.sDrinks == "no" || this.sDrinks=="NO" || this.sDrinks=="No" || this.sDrinks=="nO"){
                     aReturn.push("(no drinks selected)");
                 }
